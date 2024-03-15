@@ -26,6 +26,7 @@ var _ = Describe("CertificateIssuance", func() {
 		IssuerName       string = "letsencrypt-prod"
 		IssuerKind       string = "ClusterIssuer"
 		certCommonName   string = "example.com"
+		err              error
 	)
 
 	BeforeEach(func() {
