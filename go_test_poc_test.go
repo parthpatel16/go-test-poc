@@ -62,16 +62,6 @@ var _ = Describe("CertificateIssuance", func() {
 	})
 
 	It("should issue a certificate successfully", func() {
-		kubeconfigPath := os.Getenv("KUBECONFIG_PATH")
-		if kubeconfigPath == "" {
-			kubeconfigPath = "/home/parthpatel/.kube/config" // Default path
-		}
-		config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
-		Expect(err).NotTo(HaveOccurred())
-
-		cmClient, err := cmclientset.NewForConfig(config)
-		Expect(err).NotTo(HaveOccurred())
-
 		cert := &certManagerv1.Certificate{
 			ObjectMeta: metav1.ObjectMeta{
 				Name:      certName,
