@@ -34,7 +34,7 @@ var _ = Describe("CertificateIssuance", func() {
 		var isRunningInCluster string = os.Getenv("RUNNING_IN_CLUSTER")
 
 		if isRunningInCluster == "true" {
-			fmt.Print("Using config from in-cluster")
+			fmt.Print("Using config from in-cluster\n")
 			config, err = rest.InClusterConfig()
 			Expect(err).NotTo(HaveOccurred(), "Should be able to create in-cluster config")
 
