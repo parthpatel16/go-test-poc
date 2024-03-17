@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: cert-manager-create
+rules:
+- apiGroups: ["cert-manager.io"]
+  resources: ["certificates"]
+  verbs: ["create", "get", "list", "watch", "delete"] # Adjust the verbs according to your requirements
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cert-manager-create-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: testkube-api-server-tests-job
+  namespace: testkube
+roleRef:
+  kind: Role
+  name: cert-manager-create
+  apiGroup: rbac.authorization.k8s.io

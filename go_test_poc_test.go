@@ -23,9 +23,9 @@ var _ = Describe("CertificateIssuance", func() {
 		certName         string = "test-certificate"
 		defaultNamespace string = "default"
 		secretName       string = "test-secret"
-		IssuerName       string = "letsencrypt-prod"
+		IssuerName       string = "letsencrypt-dev-platformnintextestio"
 		IssuerKind       string = "ClusterIssuer"
-		certCommonName   string = "example.com"
+		certCommonName   string = "test.platform.nintextest.io"
 		err              error
 	)
 
