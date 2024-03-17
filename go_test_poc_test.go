@@ -20,13 +20,14 @@ import (
 var _ = Describe("CertificateIssuance", func() {
 	var (
 		cmClient         *cmclientset.Clientset
+		err              error
 		certName         string = "test-certificate"
 		defaultNamespace string = "testkube"
 		secretName       string = "test-secret"
 		IssuerName       string = "letsencrypt-dev-platformnintextestio"
 		IssuerKind       string = "ClusterIssuer"
 		certCommonName   string = "test.platform.nintextest.io"
-		err              error
+		maxRetryAttempt  int    = 3
 	)
 
 	BeforeEach(func() {
@@ -82,20 +83,31 @@ var _ = Describe("CertificateIssuance", func() {
 		_, err = cmClient.CertmanagerV1().Certificates(defaultNamespace).Create(context.TODO(), cert, metav1.CreateOptions{})
 		Expect(err).NotTo(HaveOccurred())
 
-		// Wait for certificate to be ready (this is a simplified wait; in real scenarios consider using a watch or retry mechanism)
-		time.Sleep(10 * time.Second)
-
-		// Fetch the Certificate to check its status
-		issuedCert, err := cmClient.CertmanagerV1().Certificates(defaultNamespace).Get(context.TODO(), certName, metav1.GetOptions{})
-		Expect(err).NotTo(HaveOccurred())
-
 		// Perform check multiple times if the Cert is not ready
+		waitTime := 30 * time.Second
+		for attempt := 1; attempt <= maxRetryAttempt; attempt++ {
+			fmt.Printf("Checking if certificate is ready, attempt %d\n", attempt)
 
-		// Expect the Certificate to be ready
-		Expect(issuedCert.Status.Conditions).ToNot(BeEmpty())
-		for _, condition := range issuedCert.Status.Conditions {
-			Expect(condition.Type).To(BeEquivalentTo(certManagerv1.CertificateConditionReady))
-			Expect(condition.Status).To(BeEquivalentTo(metav1.ConditionTrue))
+			// Fetch the Certificate to check its status
+			issuedCert, err := cmClient.CertmanagerV1().Certificates(defaultNamespace).Get(context.TODO(), certName, metav1.GetOptions{})
+			Expect(err).NotTo(HaveOccurred(), "Failed to get the certificate")
+
+			// Expect the Certificate to be ready
+			for _, condition := range issuedCert.Status.Conditions {
+				if condition.Type == certManagerv1.CertificateConditionReady {
+					Expect(condition.Type).To(BeEquivalentTo(certManagerv1.CertificateConditionReady))
+					Expect(condition.Status).To(BeEquivalentTo(metav1.ConditionTrue))
+					return
+				}
+			}
+
+			if attempt < maxRetryAttempt {
+				fmt.Printf("Certificate is not ready, wait for %v before retrying\n", waitTime)
+				time.Sleep(waitTime)
+				waitTime *= 2
+			} else {
+				Fail("Certificate did not become ready after %v attempts", maxRetryAttempt)
+			}
 		}
 	})
 })
