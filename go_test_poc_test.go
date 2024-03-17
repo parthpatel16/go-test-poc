@@ -93,10 +93,10 @@ var _ = Describe("CertificateIssuance", func() {
 
 		// Expect the Certificate to be ready
 		Expect(issuedCert.Status.Conditions).ToNot(BeEmpty())
-		print(issuedCert.Status.Conditions)
+		fmt.Printf("IssuedCert Conditions: %+v\n", issuedCert.Status.Conditions)
 		for _, condition := range issuedCert.Status.Conditions {
 			if condition.Type == certManagerv1.CertificateConditionReady {
-				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
+				Expect(condition.Status).To(Equal(certManagerv1.CertificateConditionReady))
 			}
 		}
 	})
