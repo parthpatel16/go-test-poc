@@ -83,7 +83,7 @@ var _ = Describe("CertificateIssuance", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		// Wait for certificate to be ready (this is a simplified wait; in real scenarios consider using a watch or retry mechanism)
-		time.Sleep(30 * time.Second)
+		time.Sleep(10 * time.Second)
 
 		// Fetch the Certificate to check its status
 		issuedCert, err := cmClient.CertmanagerV1().Certificates(defaultNamespace).Get(context.TODO(), certName, metav1.GetOptions{})
@@ -96,7 +96,7 @@ var _ = Describe("CertificateIssuance", func() {
 		fmt.Printf("IssuedCert Conditions: %+v\n", issuedCert.Status.Conditions)
 		for _, condition := range issuedCert.Status.Conditions {
 			if condition.Type == certManagerv1.CertificateConditionReady {
-				Expect(condition.Status).To(Equal(certManagerv1.CertificateConditionReady))
+				Expect(condition.Status).To(Equal("True"))
 			}
 		}
 	})
