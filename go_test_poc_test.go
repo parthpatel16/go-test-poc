@@ -104,6 +104,7 @@ var _ = Describe("CertificateIssuance", func() {
 			}
 
 			if certificateReady {
+				fmt.Printf("Found certificate in attemp no. %v\n", attempt)
 				return
 			}
 
