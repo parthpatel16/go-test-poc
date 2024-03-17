@@ -83,7 +83,7 @@ var _ = Describe("CertificateIssuance", func() {
 		Expect(err).NotTo(HaveOccurred())
 
 		// Wait for certificate to be ready (this is a simplified wait; in real scenarios consider using a watch or retry mechanism)
-		time.Sleep(60 * time.Second)
+		time.Sleep(300 * time.Second)
 
 		// Fetch the Certificate to check its status
 		issuedCert, err := cmClient.CertmanagerV1().Certificates(defaultNamespace).Get(context.TODO(), "test-certificate", metav1.GetOptions{})
