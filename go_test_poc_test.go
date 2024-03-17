@@ -93,12 +93,18 @@ var _ = Describe("CertificateIssuance", func() {
 			Expect(err).NotTo(HaveOccurred(), "Failed to get the certificate")
 
 			// Expect the Certificate to be ready
+			certificateReady := false
 			for _, condition := range issuedCert.Status.Conditions {
 				if condition.Type == certManagerv1.CertificateConditionReady {
 					Expect(condition.Type).To(BeEquivalentTo(certManagerv1.CertificateConditionReady))
 					Expect(condition.Status).To(BeEquivalentTo(metav1.ConditionTrue))
-					return
+					certificateReady = true
+					break
 				}
+			}
+
+			if certificateReady {
+				return
 			}
 
 			if attempt < maxRetryAttempt {
