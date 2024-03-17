@@ -21,7 +21,7 @@ var _ = Describe("CertificateIssuance", func() {
 	var (
 		cmClient         *cmclientset.Clientset
 		certName         string = "test-certificate"
-		defaultNamespace string = "default"
+		defaultNamespace string = "testkube"
 		secretName       string = "test-secret"
 		IssuerName       string = "letsencrypt-dev-platformnintextestio"
 		IssuerKind       string = "ClusterIssuer"
